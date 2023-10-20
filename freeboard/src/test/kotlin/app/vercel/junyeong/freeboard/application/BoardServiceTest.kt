@@ -1,9 +1,15 @@
 package app.vercel.junyeong.freeboard.application
 
 import app.vercel.junyeong.freeboard.domain.repository.BoardRepository
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import org.junit.jupiter.api.assertThrows
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException
+import org.springframework.web.client.HttpClientErrorException.BadRequest
+import org.springframework.web.client.HttpClientErrorException.NotFound
 
 class BoardServiceTest(
     private val boardRepository: BoardRepository
@@ -12,11 +18,20 @@ class BoardServiceTest(
 
     init {
         given("유저가 홈화면에 진입했을 때") {
-            `when`("글이 하나라도 존재한다면") {
-                then("글 목록이 조회된다.")
-            }
             `when`("글이 존재하지 않는다면") {
                 then("404 예외가 발생한다.")
+                val exception = shouldThrow<NotFound> {
+                    boardService.getPosts()
+                }
+                exception.statusCode.shouldBe(404)
+            }
+
+            boardRepository.save()
+            `when`("글이 하나라도 존재한다면") {
+                val result = boardService.getPosts().size
+
+                then("글 목록이 조회된다.")
+                result shouldNotBe 0
             }
         }
 
