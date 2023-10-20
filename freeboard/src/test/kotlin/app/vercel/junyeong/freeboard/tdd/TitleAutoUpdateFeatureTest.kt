@@ -1,13 +1,13 @@
 package app.vercel.junyeong.freeboard.tdd
 
 import app.vercel.junyeong.freeboard.application.BoardService
-import app.vercel.junyeong.freeboard.domain.repository.BoardRepository
+import app.vercel.junyeong.freeboard.domain.repository.PostRepository
 import io.kotest.core.spec.style.ExpectSpec
 
 class TitleAutoUpdateFeatureTest(
-    private val boardRepository: BoardRepository
+    private val postRepository: PostRepository
 ) : ExpectSpec() {
-    private val boardService = BoardService(repository = boardRepository)
+    private val boardService = BoardService(repository = postRepository)
 
     init {
         context("글이 수정될 때") {

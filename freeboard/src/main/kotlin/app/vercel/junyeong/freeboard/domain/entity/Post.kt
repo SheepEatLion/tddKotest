@@ -7,7 +7,7 @@ import jakarta.persistence.Id
 import java.time.LocalDateTime
 
 @Entity
-class Board(
+class Post(
     @Id
     @GeneratedValue(strategy = AUTO)
     val id: Long,
