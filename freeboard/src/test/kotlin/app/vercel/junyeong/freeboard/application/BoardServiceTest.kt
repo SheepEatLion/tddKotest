@@ -1,10 +1,13 @@
 package app.vercel.junyeong.freeboard.application
 
+import app.vercel.junyeong.freeboard.domain.entity.Post
 import app.vercel.junyeong.freeboard.domain.repository.PostRepository
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import org.springframework.web.client.HttpClientErrorException.BadRequest
 import org.springframework.web.client.HttpClientErrorException.NotFound
 
 class BoardServiceTest(
@@ -33,10 +36,18 @@ class BoardServiceTest(
 
         given("유저가 글 등록 버튼을 눌렀을 때") {
             `when`("입력 조건을 모두 채웠다면") {
+                val createPostRequest = CreatePostRequest()
                 then("글이 생성된다.")
+                val post = boardService.create(request = createPostRequest)
+
+                post.shouldNotBeEmpty()
             }
             `when`("입력 조건이 하나라도 비었다면") {
+                val createPostRequest = CreatePostRequest()
                 then("400 예외를 발생한다.")
+                shouldThrowExactly<BadRequest> {
+                    boardService.create(request = createPostRequest)
+                }
             }
         }
 
