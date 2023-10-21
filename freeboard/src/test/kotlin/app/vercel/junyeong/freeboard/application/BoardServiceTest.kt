@@ -2,6 +2,7 @@ package app.vercel.junyeong.freeboard.application
 
 import app.vercel.junyeong.freeboard.domain.entity.Post
 import app.vercel.junyeong.freeboard.domain.repository.PostRepository
+import app.vercel.junyeong.freeboard.exception.BadRequestException
 import app.vercel.junyeong.freeboard.exception.NotFoundException
 import app.vercel.junyeong.freeboard.presentation.data.CreatePostRequest
 import app.vercel.junyeong.freeboard.presentation.data.SearchPostsRequest
@@ -67,10 +68,11 @@ class BoardServiceTest(
             }
 
             `when`("내용 필드가 바뀌지 않았다면") {
-                boardService.update(updatePostRequest = updatePostRequest)
-
-                then("글이 수정되지 않는다.")
-                boardService.getPost(post.id).updatedAt.shouldNotBe(now())
+                then("글이 수정되지 않고 400 예외처리가 된다.")
+                val exception = shouldThrowExactly<BadRequestException> {
+                    boardService.update(updatePostRequest = updatePostRequest)
+                }
+                exception.shouldBe(BadRequestException())
             }
         }
     }
