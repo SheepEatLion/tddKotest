@@ -8,12 +8,13 @@ import jakarta.persistence.Id
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
+import java.time.LocalDateTime.now
 
 @Entity
 class Post(
     @Id
     @GeneratedValue(strategy = AUTO)
-    val id: Long,
+    val id: Long = 0,
 
     @Column(length = 15)
     val title: String,
@@ -21,8 +22,8 @@ class Post(
     val contents: String,
 
     @CreatedDate
-    val createdAt: LocalDateTime,
+    val createdAt: LocalDateTime = now(),
 
     @LastModifiedDate
-    var updatedAt: LocalDateTime,
+    var updatedAt: LocalDateTime? = null,
 )
