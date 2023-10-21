@@ -3,6 +3,7 @@ package app.vercel.junyeong.freeboard.application
 import app.vercel.junyeong.freeboard.domain.Specification
 import app.vercel.junyeong.freeboard.domain.entity.Post
 import app.vercel.junyeong.freeboard.domain.repository.PostRepository
+import app.vercel.junyeong.freeboard.exception.BadRequestException
 import app.vercel.junyeong.freeboard.exception.NotFoundException
 import app.vercel.junyeong.freeboard.presentation.data.CreatePostRequest
 import app.vercel.junyeong.freeboard.presentation.data.SearchPostsRequest
@@ -33,8 +34,15 @@ class BoardService(
     fun update(updatePostRequest: UpdatePostRequest): Post {
         return postRepository.findById(updatePostRequest.id).orElseThrow{ NotFoundException() }
             .run {
+                if (isSameTitleAndContents(this, updatePostRequest.title, updatePostRequest.contents)) {
+                    throw BadRequestException()
+                }
                 this.updateTitleAndContents(title = updatePostRequest.title, contents = updatePostRequest.contents)
                 postRepository.save(this)
         }
+    }
+
+    fun isSameTitleAndContents(post: Post, title: String, contents: String): Boolean {
+        return post.title == title || post.contents == contents
     }
 }
