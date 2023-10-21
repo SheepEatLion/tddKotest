@@ -18,9 +18,9 @@ class Post(
     val id: Long = 0,
 
     @Column(length = 15)
-    val title: String,
+    var title: String,
 
-    val contents: String,
+    var contents: String,
 
     @CreatedDate
     val createdAt: LocalDateTime = now(),
@@ -32,4 +32,9 @@ class Post(
         title = createPostRequest.title,
         contents = createPostRequest.contents,
     )
+
+    fun updateTitleAndContents(title: String, contents: String) {
+        this.title = title
+        this.contents = contents
+    }
 }
