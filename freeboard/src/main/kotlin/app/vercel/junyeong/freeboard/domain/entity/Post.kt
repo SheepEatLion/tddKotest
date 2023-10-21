@@ -34,7 +34,7 @@ class Post(
     )
 
     fun updateTitleAndContents(title: String, contents: String) {
-        this.title = title
+        this.title = "re:$title"
         this.contents = contents
     }
 }
