@@ -1,5 +1,6 @@
 package app.vercel.junyeong.freeboard.domain.entity
 
+import app.vercel.junyeong.freeboard.presentation.data.CreatePostRequest
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -26,4 +27,9 @@ class Post(
 
     @LastModifiedDate
     var updatedAt: LocalDateTime? = null,
-)
+) {
+    constructor(createPostRequest: CreatePostRequest): this(
+        title = createPostRequest.title,
+        contents = createPostRequest.contents,
+    )
+}

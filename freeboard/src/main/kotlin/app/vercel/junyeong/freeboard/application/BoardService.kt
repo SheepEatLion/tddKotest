@@ -4,6 +4,7 @@ import app.vercel.junyeong.freeboard.domain.Specification
 import app.vercel.junyeong.freeboard.domain.entity.Post
 import app.vercel.junyeong.freeboard.domain.repository.PostRepository
 import app.vercel.junyeong.freeboard.exception.NotFoundException
+import app.vercel.junyeong.freeboard.presentation.data.CreatePostRequest
 import app.vercel.junyeong.freeboard.presentation.data.SearchPostsRequest
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
@@ -22,5 +23,9 @@ class BoardService(
         val pageable = PageRequest.of(searchPostsRequest.pageNumber, searchPostsRequest.pageSize)
 
         return postRepository.findAll(spec, pageable)
+    }
+
+    fun create(createPostRequest: CreatePostRequest): Post {
+        return postRepository.save(Post(createPostRequest))
     }
 }
