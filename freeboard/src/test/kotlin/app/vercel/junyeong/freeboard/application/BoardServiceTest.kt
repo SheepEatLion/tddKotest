@@ -2,33 +2,36 @@ package app.vercel.junyeong.freeboard.application
 
 import app.vercel.junyeong.freeboard.domain.entity.Post
 import app.vercel.junyeong.freeboard.domain.repository.PostRepository
+import app.vercel.junyeong.freeboard.exception.NotFoundException
+import app.vercel.junyeong.freeboard.presentation.data.SearchPostsRequest
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import org.springframework.web.client.HttpClientErrorException.BadRequest
-import org.springframework.web.client.HttpClientErrorException.NotFound
 import java.time.LocalDateTime.now
 
 class BoardServiceTest(
     private val postRepository: PostRepository
 ) : BehaviorSpec() {
-    private val boardService = BoardService(repository = postRepository)
+    private val boardService = BoardService(postRepository = postRepository)
 
     init {
         given("유저가 홈화면에 진입했을 때") {
+            val post = Post(title = "test", contents = "normal-contents")
+
             `when`("글이 존재하지 않는다면") {
                 then("404 예외가 발생한다.")
-                val exception = shouldThrow<NotFound> {
-                    boardService.getPosts()
+                val exception = shouldThrow<NotFoundException> {
+                    boardService.getPosts(searchPostsRequest = SearchPostsRequest())
                 }
-                exception.statusCode.shouldBe(404)
+                exception.shouldBe(NotFoundException())
             }
 
-            postRepository.save()
+            postRepository.save(post)
             `when`("글이 하나라도 존재한다면") {
-                val result = boardService.getPosts().size
+                val result = boardService.getPosts(searchPostsRequest = SearchPostsRequest()).totalElements
 
                 then("글 목록이 조회된다.")
                 result shouldNotBe 0
