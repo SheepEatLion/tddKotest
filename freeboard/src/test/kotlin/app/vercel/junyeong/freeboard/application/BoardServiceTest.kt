@@ -9,6 +9,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import org.springframework.web.client.HttpClientErrorException.BadRequest
 import org.springframework.web.client.HttpClientErrorException.NotFound
+import java.time.LocalDateTime.now
 
 class BoardServiceTest(
     private val postRepository: PostRepository
@@ -52,11 +53,21 @@ class BoardServiceTest(
         }
 
         given("유저가 글 수정 버튼을 눌렀을 때") {
+            val post = postRepository.save()
+            val updatePostRequest = UpdatePostRequest()
+
             `when`("내용 필드가 바뀌었다면") {
+                boardService.update(request = updatePostRequest)
+
                 then("글이 수정된다.")
+                boardService.getPost() shouldBe post
             }
+
             `when`("내용 필드가 바뀌지 않았다면") {
+                boardService.update(request = updatePostRequest)
+
                 then("글이 수정되지 않는다.")
+                boardService.getPost().updatedAt shoudNotBe now()
             }
         }
     }
