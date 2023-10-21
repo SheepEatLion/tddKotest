@@ -12,8 +12,6 @@ import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import org.springframework.web.client.HttpClientErrorException.BadRequest
-import java.time.LocalDateTime.now
 
 class BoardServiceTest(
     private val postRepository: PostRepository
