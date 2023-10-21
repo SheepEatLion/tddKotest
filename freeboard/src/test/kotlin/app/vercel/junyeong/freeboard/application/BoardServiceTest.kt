@@ -5,6 +5,7 @@ import app.vercel.junyeong.freeboard.domain.repository.PostRepository
 import app.vercel.junyeong.freeboard.exception.NotFoundException
 import app.vercel.junyeong.freeboard.presentation.data.CreatePostRequest
 import app.vercel.junyeong.freeboard.presentation.data.SearchPostsRequest
+import app.vercel.junyeong.freeboard.presentation.data.UpdatePostRequest
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.BehaviorSpec
@@ -50,21 +51,26 @@ class BoardServiceTest(
         }
 
         given("유저가 글 수정 버튼을 눌렀을 때") {
-            val post = postRepository.save()
-            val updatePostRequest = UpdatePostRequest()
+            val post = postRepository.save(
+                Post(
+                    title = "test",
+                    contents = "normal-contents",
+                    )
+            )
+            val updatePostRequest = UpdatePostRequest(post.id, post.title, "updated contents")
 
             `when`("내용 필드가 바뀌었다면") {
-                boardService.update(request = updatePostRequest)
+                boardService.update(updatePostRequest = updatePostRequest)
 
                 then("글이 수정된다.")
-                boardService.getPost() shouldBe post
+                boardService.getPost(post.id).contents.shouldBe("updated contents")
             }
 
             `when`("내용 필드가 바뀌지 않았다면") {
-                boardService.update(request = updatePostRequest)
+                boardService.update(updatePostRequest = updatePostRequest)
 
                 then("글이 수정되지 않는다.")
-                boardService.getPost().updatedAt shoudNotBe now()
+                boardService.getPost(post.id).updatedAt.shouldNotBe(now())
             }
         }
     }
