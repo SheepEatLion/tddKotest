@@ -25,6 +25,9 @@ class BoardService(
         val pageable = PageRequest.of(searchPostsRequest.pageNumber, searchPostsRequest.pageSize)
 
         return postRepository.findAll(spec, pageable)
+            .also {
+                if (it.totalElements == 0L) throw NotFoundException()
+            }
     }
 
     fun create(createPostRequest: CreatePostRequest): Post {
@@ -43,6 +46,6 @@ class BoardService(
     }
 
     fun isSameTitleAndContents(post: Post, title: String, contents: String): Boolean {
-        return post.title == title || post.contents == contents
+        return post.title == title && post.contents == contents
     }
 }
