@@ -11,7 +11,9 @@ import app.vercel.junyeong.freeboard.presentation.data.UpdatePostRequest
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
+@Transactional(readOnly = true)
 @Service
 class BoardService(
     private val postRepository: PostRepository,
@@ -30,10 +32,12 @@ class BoardService(
             }
     }
 
+    @Transactional
     fun create(createPostRequest: CreatePostRequest): Post {
         return postRepository.save(Post(createPostRequest))
     }
 
+    @Transactional
     fun update(updatePostRequest: UpdatePostRequest): Post {
         return postRepository.findById(updatePostRequest.id).orElseThrow{ NotFoundException() }
             .run {
@@ -45,7 +49,7 @@ class BoardService(
         }
     }
 
-    fun isSameTitleAndContents(post: Post, title: String, contents: String): Boolean {
+    private fun isSameTitleAndContents(post: Post, title: String, contents: String): Boolean {
         return post.title == title && post.contents == contents
     }
 }
