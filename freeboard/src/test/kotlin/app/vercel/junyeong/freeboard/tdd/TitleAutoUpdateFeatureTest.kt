@@ -1,12 +1,15 @@
 package app.vercel.junyeong.freeboard.tdd
 
+import app.vercel.junyeong.freeboard.FreeboardApplication
 import app.vercel.junyeong.freeboard.application.BoardService
 import app.vercel.junyeong.freeboard.domain.entity.Post
 import app.vercel.junyeong.freeboard.domain.repository.PostRepository
 import app.vercel.junyeong.freeboard.presentation.data.UpdatePostRequest
 import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.matchers.shouldBe
+import org.springframework.test.context.ContextConfiguration
 
+@ContextConfiguration(classes = [FreeboardApplication::class])
 class TitleAutoUpdateFeatureTest(
     private val postRepository: PostRepository
 ) : ExpectSpec() {
