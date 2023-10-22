@@ -1,5 +1,6 @@
 package app.vercel.junyeong.freeboard.application
 
+import app.vercel.junyeong.freeboard.FreeboardApplication
 import app.vercel.junyeong.freeboard.domain.entity.Post
 import app.vercel.junyeong.freeboard.domain.repository.PostRepository
 import app.vercel.junyeong.freeboard.exception.BadRequestException
@@ -12,7 +13,9 @@ import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import org.springframework.test.context.ContextConfiguration
 
+@ContextConfiguration(classes = [FreeboardApplication::class])
 class BoardServiceTest(
     private val postRepository: PostRepository
 ) : BehaviorSpec() {
@@ -30,8 +33,8 @@ class BoardServiceTest(
                 exception.shouldBe(NotFoundException())
             }
 
-            postRepository.save(post)
             `when`("글이 하나라도 존재한다면") {
+                postRepository.save(post)
                 val result = boardService.getPosts(searchPostsRequest = SearchPostsRequest()).totalElements
 
                 then("글 목록이 조회된다.")
