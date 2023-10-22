@@ -30,10 +30,17 @@ tasks.withType<Test>().configureEach {
 	useJUnitPlatform()
 }
 
+allOpen {
+	annotation("jakarta.persistence.Entity")
+	annotation("jakarta.persistence.Embeddable")
+	annotation("jakarta.persistence.MappedSuperclass")
+}
+
 val kotestVersion = "5.6.1"
 val kotestExtensionsVersion = "1.1.3"
 val mockkVersion = "1.13.8"
 val mockServerVersion = "5.11.1"
+val h2Version = "2.0.202"
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -41,7 +48,7 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	runtimeOnly("com.h2database:h2")
+	runtimeOnly("com.h2database:h2:$h2Version")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.kotest:kotest-runner-junit5-jvm:$kotestVersion")
 	testImplementation("io.kotest:kotest-assertions-core-jvm:$kotestVersion")
