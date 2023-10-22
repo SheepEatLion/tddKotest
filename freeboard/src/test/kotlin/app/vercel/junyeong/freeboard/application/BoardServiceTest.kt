@@ -13,6 +13,7 @@ import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.ContextConfiguration
 
 @ContextConfiguration(classes = [FreeboardApplication::class])
@@ -59,9 +60,9 @@ class BoardServiceTest(
                     contents = "normal-contents",
                     )
             )
-            val updatePostRequest = UpdatePostRequest(post.id, post.title, "updated contents")
 
             `when`("내용 필드가 바뀌었다면") {
+                val updatePostRequest = UpdatePostRequest(post.id, post.title, "updated contents")
                 boardService.update(updatePostRequest = updatePostRequest)
 
                 then("글이 수정된다.")
@@ -69,6 +70,13 @@ class BoardServiceTest(
             }
 
             `when`("내용 필드가 바뀌지 않았다면") {
+                val updatedPost = postRepository.findByIdOrNull(post.id)
+                val updatePostRequest = UpdatePostRequest(
+                    updatedPost!!.id,
+                    updatedPost.title,
+                    updatedPost.contents,
+                )
+
                 then("글이 수정되지 않고 400 예외처리가 된다.")
                 val exception = shouldThrowExactly<BadRequestException> {
                     boardService.update(updatePostRequest = updatePostRequest)
